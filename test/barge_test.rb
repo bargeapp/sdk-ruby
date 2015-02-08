@@ -41,7 +41,7 @@ class BargeTest < MiniTest::Test
   end
 
   def test_create_webdriver_test_success
-    stub_request(:post, "#{@base_url}/api/tests/webdriver").to_return(status: 201)
+    stub_request(:post, "#{@base_url}/api/tests/create_webdriver").to_return(status: 201)
     resp = @client.create_webdriver_test
     assert_equal({}, resp)
   end

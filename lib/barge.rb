@@ -24,7 +24,7 @@ module Barge
     end
 
     def create_webdriver_test(opts = {})
-      execute :post, "tests/webdriver", {
+      execute :post, "tests/create_webdriver", {
         webdriver_session_id: opts[:webdriver_session_id],
         users: opts[:users],
         minutes: opts[:minutes]
