@@ -3,7 +3,7 @@ require 'test_helper'
 class BargeTest < MiniTest::Test
   def setup
     @client = Barge::Client.new api_key: '123456789'
-    @base_url = "http://www.bargeapp.com:443"
+    @base_url = "https://www.bargeapp.com"
     @success_body = '{"success": true}'
   end
 
