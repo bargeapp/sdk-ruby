@@ -48,7 +48,7 @@ module Barge
         http.verify_mode = @verify_mode
       end
 
-      req = klass.new(uri.request_uri, initheader = { 'Content-Type' =>'application/json', 'API_KEY' => @api_key })
+      req = klass.new(uri.request_uri, initheader = { 'Content-Type' =>'application/json', 'API-KEY' => @api_key })
 
 
       if params.keys.count > 0
