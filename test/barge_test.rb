@@ -12,17 +12,17 @@ class BargeTest < MiniTest::Test
       @client = Barge::Client.new
     end
   end
-
+  
   def test_create_webdriver_session_success
     stub_request(:post, "#{@base_url}/api/webdriver_sessions").to_return(status: 200, body: @success_body)
-    resp = @client.create_webdriver_session
+    resp = @client.create_webdriver_session(false)
     assert_equal JSON.parse(@success_body), resp
   end
 
   def test_create_webdriver_unauthorized
     stub_request(:post, "#{@base_url}/api/webdriver_sessions").to_return(status: 401)
     assert_raises Barge::UnauthorizedException do
-      @client.create_webdriver_session
+      @client.create_webdriver_session(false)
     end
   end
 

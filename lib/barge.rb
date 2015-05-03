@@ -9,14 +9,27 @@ module Barge
 
   class Client
     def initialize(opts = {})
-      @api_key      = opts[:api_key] or raise ArgumentError, 'api_key is required'
+      @api_key      = opts[:api_key]
       @endpoint     = opts[:endpoint] || 'https://www.bargeapp.com/api'
       @ssl          = opts.has_key?(:ssl) ? !!opts[:ssl] : true
       @verify_mode  = opts[:verify_mode] || OpenSSL::SSL::VERIFY_PEER
     end
 
-    def create_webdriver_session
-      execute :post, 'webdriver_sessions'
+    def create_webdriver_session(sync = true)
+      session = execute :post, 'webdriver_sessions'
+
+      if !sync
+        return session
+      end
+
+      loop do
+        session = describe_webdriver_sessions(session['id'])
+        break unless session['status'] == 'pending'
+        sleep 3
+      end
+
+      Capybara::Selenium::Remote.use(session['ip'], url: "http://#{session['ip']}#{session['port']}/")
+      session
     end
 
     def describe_webdriver_sessions(id = nil)
@@ -37,6 +50,7 @@ module Barge
 
     private
     def execute(verb, path, params = {})
+      # Titleize verb name and initialize that class by name
       klass_name = verb.slice(0,1).capitalize + verb.slice(1..-1).downcase
       klass = Net::HTTP.const_get(klass_name)
 
@@ -48,7 +62,7 @@ module Barge
         http.verify_mode = @verify_mode
       end
 
-      req = klass.new(uri.request_uri, initheader = { 'Content-Type' =>'application/json', 'API-KEY' => @api_key })
+      req = klass.new(uri.request_uri, { 'Content-Type' =>'application/json', 'API-KEY' => @api_key })
 
 
       if params.keys.count > 0
