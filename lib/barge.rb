@@ -28,6 +28,7 @@ module Barge
         sleep 3
       end
 
+      Capybara.default_driver = :selenium
       Capybara::Selenium::Remote.use(session['ip'], url: "http://#{session['ip']}#{session['port']}/")
       session
     end
