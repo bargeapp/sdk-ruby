@@ -9,7 +9,7 @@ module Barge
 
   class Client
     def initialize(opts = {})
-      @api_key      = opts[:api_key]
+      @api_key      = opts[:api_key] or raise ArgumentError, 'api_key is required'
       @endpoint     = opts[:endpoint] || 'https://www.bargeapp.com/api'
       @ssl          = opts.has_key?(:ssl) ? !!opts[:ssl] : true
       @verify_mode  = opts[:verify_mode] || OpenSSL::SSL::VERIFY_PEER
