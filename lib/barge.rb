@@ -4,6 +4,7 @@ require 'json'
 
 module Barge
   class BargeException < Exception ; end
+  class WebdriverTimeout < BargeException ; end
   class UnauthorizedException < BargeException ; end
   class NotFoundException < BargeException ; end
 
@@ -22,10 +23,15 @@ module Barge
         return session
       end
 
+      loops = 0
       loop do
         session = describe_webdriver_sessions(session['id'])
         break unless session['status'] == 'pending'
-        sleep 3
+        if ((loops += 1) > 10)
+          raise WebdriverTimeout
+        else
+          sleep 3
+        end
       end
 
       Capybara.default_driver = :selenium
